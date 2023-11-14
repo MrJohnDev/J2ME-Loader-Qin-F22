@@ -352,23 +352,17 @@ public class MicroActivity extends AppCompatActivity {
 		alertBuilder.create().show();
 	}
 
-	@Override
-	public boolean dispatchKeyEvent(KeyEvent event) {
-		if (event.getKeyCode() == KeyEvent.KEYCODE_MENU)
-			if (current instanceof Canvas && binding.displayableContainer.dispatchKeyEvent(event)) {
-				return true;
-			} else if (event.getAction() == KeyEvent.ACTION_DOWN) {
-				if (event.getRepeatCount() == 0) {
-					event.startTracking();
-					return true;
-				} else if (event.isLongPress()) {
-					return onKeyLongPress(event.getKeyCode(), event);
-				}
-			} else if (event.getAction() == KeyEvent.ACTION_UP) {
-				return onKeyUp(event.getKeyCode(), event);
-			}
-		return super.dispatchKeyEvent(event);
-	}
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        switch (event.getKeyCode()) {
+			case KeyEvent.KEYCODE_BACK:
+				return super.dispatchKeyEvent(new KeyEvent(event.getDownTime(), event.getEventTime(), event.getAction(), KeyEvent.KEYCODE_SOFT_RIGHT, event.getRepeatCount(), event.getMetaState(), event.getDeviceId(), event.getScanCode(), event.getFlags(), event.getSource()));
+            case KeyEvent.KEYCODE_MENU:
+				return super.dispatchKeyEvent(new KeyEvent(event.getDownTime(), event.getEventTime(), event.getAction(), KeyEvent.KEYCODE_SOFT_LEFT, event.getRepeatCount(), event.getMetaState(), event.getDeviceId(), event.getScanCode(), event.getFlags(), event.getSource()));
+			default:
+                return super.dispatchKeyEvent(event);
+        }
+    }
 
 	@Override
 	public void openOptionsMenu() {
@@ -381,8 +375,11 @@ public class MicroActivity extends AppCompatActivity {
 
 	@Override
 	public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-		if (keyCode == menuKey || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			showExitConfirmation();
+			return true;
+		} else if (keyCode == menuKey || keyCode == KeyEvent.KEYCODE_MENU) {
+			openOptionsMenu();
 			return true;
 		}
 		return super.onKeyLongPress(keyCode, event);
@@ -394,16 +391,6 @@ public class MicroActivity extends AppCompatActivity {
 			return false;
 		}
 		return super.onKeyDown(keyCode, event);
-	}
-
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		if ((keyCode == menuKey || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_MENU)
-				&& (event.getFlags() & (KeyEvent.FLAG_LONG_PRESS | KeyEvent.FLAG_CANCELED)) == 0) {
-			openOptionsMenu();
-			return true;
-		}
-		return super.onKeyUp(keyCode, event);
 	}
 
 	@Override
