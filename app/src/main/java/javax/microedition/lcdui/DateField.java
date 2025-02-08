@@ -1,5 +1,6 @@
 /*
  * Copyright 2018 Nikita Shakarun
+ * Copyright 2023 Arman Jussupgaliyev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,6 +72,7 @@ public class DateField extends Item {
 		@Override
 		public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 			calendar.set(year, monthOfYear, dayOfMonth);
+			notifyStateChanged();
 		}
 	}
 
@@ -79,6 +81,7 @@ public class DateField extends Item {
 		public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
 			calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
 			calendar.set(Calendar.MINUTE, minute);
+			notifyStateChanged();
 		}
 	}
 
