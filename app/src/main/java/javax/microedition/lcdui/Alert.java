@@ -1,6 +1,7 @@
 /*
  * Copyright 2012 Kulikov Dmitriy
  * Copyright 2017-2018 Nikita Shakarun
+ * Copyright 2021-2024 Arman Jussupgaliyev
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,8 +48,6 @@ public class Alert extends Screen implements DialogInterface.OnClickListener {
 	private int timeout;
 	private Gauge indicator;
 	private AlertDialog alertDialog;
-
-	private Form form;
 	private Displayable nextDisplayable;
 
 	private Command[] commands;
@@ -158,7 +157,7 @@ public class Alert extends Screen implements DialogInterface.OnClickListener {
 	}
 
 	public boolean finiteTimeout() {
-		return timeout > 0 && countCommands() < 2;
+		return timeout > 0 && countCommands() == 1 && getCommands()[0] == DISMISS_COMMAND;
 	}
 
 	public AlertDialog prepareDialog() {
@@ -265,23 +264,24 @@ public class Alert extends Screen implements DialogInterface.OnClickListener {
 	}
 
 	@Override
-	public View getScreenView() {
-		if (form == null) {
-			form = new Form(getTitle());
+	public View getDisplayableView() {
+		return null;
+	}
 
-			form.append(image);
-			form.append(text);
+	@Override
+	public void clearDisplayableView() {
+		if (alertDialog != null) {
+			alertDialog.dismiss();
 		}
+	}
 
-		return form.getDisplayableView();
+	@Override
+	public View getScreenView() {
+		return null;
 	}
 
 	@Override
 	public void clearScreenView() {
-		if (form != null) {
-			form.clearDisplayableView();
-			form = null;
-		}
 	}
 
 	@Override
@@ -301,12 +301,21 @@ public class Alert extends Screen implements DialogInterface.OnClickListener {
 		}
 	}
 
-	void setNextDisplayable(Displayable nextDisplayable) {
+	void setReturnScreen(Displayable nextDisplayable) {
+		if (nextDisplayable != null && nextDisplayable instanceof Alert) {
+			throw new IllegalArgumentException("Alert cannot return to Alert");
+		}
 		this.nextDisplayable = nextDisplayable;
 	}
 
-	private void dismiss() {
-		Display.getDisplay(null).setCurrent(nextDisplayable);
+	void dismiss() {
+		if (alertDialog == null) {
+			return;
+		}
+		Display display = Display.getDisplay(null);
+		if (display.getCurrent() == this)
+			display.setCurrent(nextDisplayable);
+		nextDisplayable = null;
 		alertDialog = null;
 	}
 }
