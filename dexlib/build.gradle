@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    compileSdk COMPILE_SDK
-    namespace 'com.android.dx'
+    compileSdk = COMPILE_SDK
+    namespace = 'com.android.dx'
 
     defaultConfig {
-        minSdk MIN_SDK
-        targetSdk TARGET_SDK
+        minSdk = MIN_SDK
+        targetSdk = TARGET_SDK
     }
 
     buildTypes {
@@ -19,7 +19,7 @@ android {
     }
 
     lint {
-        abortOnError false
+        abortOnError = false
     }
 }
 

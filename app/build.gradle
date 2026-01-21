@@ -5,14 +5,14 @@ plugins {
 def midletArchivesBaseName
 
 android {
-    compileSdk COMPILE_SDK
-    ndkVersion NDK_VERSION
-    namespace 'ru.playsoftware.j2meloader'
+    compileSdk = COMPILE_SDK
+    ndkVersion = NDK_VERSION
+    namespace = 'ru.playsoftware.j2meloader'
 
     defaultConfig {
         applicationId "ru.playsoftware.j2meloader"
-        minSdk MIN_SDK
-        targetSdk TARGET_SDK
+        minSdk = MIN_SDK
+        targetSdk = TARGET_SDK
         versionCode 101
         versionName "1.8.2"
         resValue 'string', 'app_name', rootProject.name
@@ -41,14 +41,14 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            shrinkResources true
-            signingConfig signingConfigs.release
+            shrinkResources = true
+            signingConfig = signingConfigs.release
         }
         debug {
             applicationIdSuffix '.debug'
             jniDebuggable true
-            multiDexEnabled true
-            multiDexKeepProguard file('multidex-config.pro')
+            multiDexEnabled = true
+            multiDexKeepProguard = file('multidex-config.pro')
         }
     }
 
@@ -128,7 +128,8 @@ android {
     }
 
     buildFeatures {
-        viewBinding true
+        buildConfig = true
+        viewBinding = true
     }
 }
 
